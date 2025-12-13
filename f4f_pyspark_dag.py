@@ -2,13 +2,13 @@ from datetime import datetime, timedelta
 from airflow import DAG
 from airflow.operators.python import PythonOperator
 
-# Import the functions from your project folder (mounted into /opt/airflow/dags/flour4flour)
-from f4f.extract import run_extraction
-from f4f.transform import run_transformation
-from f4f.load import run_loading
+# Import the functions from your project folder (mounted into /opt/airflow/dags/f4f)
+from Flour4fourPyspark.extraction import run_extraction
+from Flour4fourPyspark.transformation import run_transformation
+from Flour4fourPyspark.loading import run_loading
 
 default_args = {
-    "owner": "onyeka",
+    "owner": "airflow",
     "depends_on_past": False,
     "email_on_failure": True,
     "email_on_retry": False,
@@ -17,27 +17,27 @@ default_args = {
 }
 
 with DAG(
-    dag_id="Flour4fout_pyspark",
+    dag_id="F4f_pyspark_dag",
     default_args=default_args,
     start_date=datetime(2025, 12, 10),
-    schedule="@daily",
+    schedule=None,
     catchup=False,
-    tags=["etl", "F4f", "pyspark"],
+    tags=["etl", "Pyspark"],
 ) as dag:
 
-    extract_task = PythonOperator(
-        task_id="extract",
+    extraction = PythonOperator(
+        task_id='extraction',
         python_callable=run_extraction,
     )
 
-    transform_task = PythonOperator(
-        task_id="transform",
+    transformation = PythonOperator(
+        task_id='transformation',
         python_callable=run_transformation,
     )
 
-    load_task = PythonOperator(
-        task_id="load_to_postgres",
+    loading = PythonOperator(
+        task_id='loading',
         python_callable=run_loading,
     )
 
-    extract_task >> transform_task >> load_task
+    extraction >> transformation >> loading

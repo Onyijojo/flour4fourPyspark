@@ -7,6 +7,7 @@ from pyspark.sql import functions as F
 
 
 def run_extraction():
+
     # Folder where script lives
     PROJECT_ROOT = Path(__file__).resolve().parent
     JAR_PATH = PROJECT_ROOT / "postgresql-42.7.8.jar" 
